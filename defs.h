@@ -2,7 +2,7 @@
 #define DEFS_H
 #include "stdlib.h"
 #include "stdio.h"
-#define DEBUG
+// #define DEBUG
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -20,6 +20,7 @@ typedef unsigned long long U64;
 #define Name "Vice 1.0"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
+#define MAXPOSITIONMOVES 256
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 enum
@@ -152,6 +153,11 @@ typedef struct {
 } S_MOVE;
 
 typedef struct {
+    S_MOVE moves[MAXPOSITIONMOVES];
+    int count;
+} S_MOVELIST;
+
+typedef struct {
     int move;
     int castlePerm;
     int enPas;
@@ -263,6 +269,8 @@ extern int PieceKnight[13];
 extern int PieceKing[13];
 extern int PieceRookQueen[13];
 extern int PieceBishopQueen[13];
+extern int PieceSlides[13];
+extern int PiecePawn[13];
 // extern const int KnDir[8] = {-8, -19, -21, -12, 8, 9, 21, 12};
 // extern const int RkDir[4] = {-1, -10, 1, 10};
 // extern const int BiDir[4] = {-9, -11, 11, 9};
@@ -287,4 +295,24 @@ extern int SqAttacked(const int sq, const int side, const S_BOARD* pos);
 //io.c
 extern char* PrMove(const int move);
 extern char* SqStr(const int sq);
+extern void PrintMoveList(const S_MOVELIST* list);
+//validate.c
+extern int SqOnBoard(const int sq);
+extern int SideValid(const int side);
+extern int FileRankValid(const int fr);
+
+extern int PieceValidEmpty(const int pce);
+extern int PieceValid(const int pce);
+//movegen.c
+// extern void AddQuietMove(const S_BOARD* pos, int move, S_MOVELIST* list);
+// extern void AddCaptureMove(const S_BOARD* pos, int move, S_MOVELIST* list);
+// extern void AddEnPassantMove(const S_BOARD* pos, int move, S_MOVELIST* list);
+// extern void AddWhitePawnCapMove( const S_BOARD* pos, const int from, const int to, const int cap, S_MOVELIST* list);
+// extern void AddWhitePawnMove( const S_BOARD* pos, const int from, const int to, S_MOVELIST* list);
+extern void GenerateAllMoves(const S_BOARD* pos, S_MOVELIST* list);
+extern int MakeMove(S_BOARD* pos, int move);
+extern void TakeMove(S_BOARD* pos);
+//perft.c
+extern void PerftTest(int depth, S_BOARD* pos);
+
 #endif

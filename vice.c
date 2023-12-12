@@ -1,11 +1,21 @@
 #include "defs.h"
 #include <stdio.h>
 #include "stdlib.h"
+#define PAWNTST "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1 "
+#define PAWNTSTB "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1 "
 #define FENTEST "8/3q1p2/8/5P2/4Q3/8/8/8 w - - 2 1 "
+#define KNIGHTTEST "5k2/1n6/4n3/6N1/8/3N4/8/5K2 w - - 0 1 "
 #define FEN1 "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
 #define FEN2 "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
 #define FEN3 "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
 #define PERFT "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+#define ROOKS "6k1/8/5r2/8/1nR5/5N2/1N6/6K1 b - - 0 1 "
+#define QUEENS "6k1/8/4nq2/8/1nQ5/5N2/1N6/6K1 b - - 0 1 "
+#define BISHOPS "6k1/1b6/4n3/8/1n4B1/1B3N2/1N6/2b3K1 b - - 0 1 "
+#define CASTLE "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1 "
+#define PERFT2 "4k3/8/8/8/8/8/8/4K2R w K - 0 1 "
+#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 void ShowSqAtBySide(const int side, const S_BOARD* pos){
     int rank = 0;
     int file = 0;
@@ -38,6 +48,29 @@ void PrintBin(int move){
 int main(){
     AllInit();
     S_BOARD board[1];
+    S_MOVELIST list[1];
+    ParseFen(PERFT2, board);
+    //PrintBoard(board);
+    PerftTest(6, board);
+    // GenerateAllMoves(board, list);
+    // ASSERT(CheckBoard(board));
+    // int MoveNum = 0;
+    // int move = 0;
+    // for(MoveNum = 0; MoveNum < list->count; ++MoveNum){
+    //     move = list->moves[MoveNum].move;
+    //     printf("MOVENUM %d\n", MoveNum);
+    //     if(!MakeMove(board, move)){
+    //         continue;
+    //     }
+
+    //     printf("\nMADE: %s\n", PrMove(move));
+    //     PrintBoard(board);
+    //     TakeMove(board);
+    //     printf("\nTAKEN: %s\n", PrMove(move));
+    //     PrintBoard(board);
+
+    //     getchar();
+    // }
     // ParseFen(START_FEN, board);
     // PrintBoard(board);
     // ParseFen(FEN1, board);
@@ -46,21 +79,23 @@ int main(){
     // PrintBoard(board);
     // ParseFen(FEN3, board);
     // PrintBoard(board);
-    ParseFen(PERFT, board);
-    PrintBoard(board);
-    
-   ASSERT(CheckBoard(board));
-   int move = 0;
-   int from = A2; int to = H7;
-   int cap = wR; int prom = bK;
-   move = ((from) | (to << 7) | (cap << 14) | (prom << 20));
+    // ParseFen(PERFT, board);
+    // PrintBoard(board);
+    // S_MOVELIST list[1];
+    // GenerateAllMoves(board, list);
+    // PrintMoveList(list);
+//    ASSERT(CheckBoard(board));
+//    int move = 0;
+//    int from = A2; int to = H7;
+//    int cap = wR; int prom = bK;
+//    move = ((from) | (to << 7) | (cap << 14) | (prom << 20));
 
-//    printf("n dec: %d hex: %X\n", move, move);
-//    PrintBin(move);
-   printf("from:%d to:%d cap:%d prom:%d\n", FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move));
-    printf("Algebraic from: %s \n", SqStr(from));
-    printf("Algebraic to: %s \n", SqStr(to));
-    printf("Algebraic move: %s \n", PrMove(move));
+// //    printf("n dec: %d hex: %X\n", move, move);
+// //    PrintBin(move);
+//    printf("from:%d to:%d cap:%d prom:%d\n", FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move));
+//     printf("Algebraic from: %s \n", SqStr(from));
+//     printf("Algebraic to: %s \n", SqStr(to));
+//     printf("Algebraic move: %s \n", PrMove(move));
 
 //    printf("is PST: %s\n", (move & MFLAGPS)? "Yes" : "No");
     // ShowSqAtBySide(BLACK, board);
