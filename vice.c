@@ -16,6 +16,8 @@
 #define PERFT2 "4k3/8/8/8/8/8/8/4K2R w K - 0 1 "
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+#define PERFT3 "8/8/1B6/7b/7k/8/2B1b3/7K w - - 0 1 "
+
 void ShowSqAtBySide(const int side, const S_BOARD* pos){
     int rank = 0;
     int file = 0;
@@ -49,8 +51,10 @@ int main(){
     AllInit();
     S_BOARD board[1];
     S_MOVELIST list[1];
-    ParseFen(PERFT2, board);
+    ParseFen(PERFT3, board);
     //PrintBoard(board);
+    printf("HI");
+    
     PerftTest(6, board);
     // GenerateAllMoves(board, list);
     // ASSERT(CheckBoard(board));
