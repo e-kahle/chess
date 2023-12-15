@@ -17,10 +17,13 @@ exit(1) ;}
 #endif
 typedef unsigned long long U64;
 
-#define Name "Vice 1.0"
+#define NAME "Vice 1.0"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
+#define MAXDEPTH 64
+
+
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 enum
@@ -157,6 +160,18 @@ typedef struct {
     int count;
 } S_MOVELIST;
 
+
+typedef struct {
+    U64 posKey;
+    int move;
+} S_PVENTRY;
+
+typedef struct {
+    S_PVENTRY* pTable;
+    int numEntries;
+} S_PVTABLE;
+
+
 typedef struct {
     int move;
     int castlePerm;
@@ -198,6 +213,9 @@ typedef struct{
     //piece list (initialized to NO_SQ, pList[piece][num] = sq)
     int pList[13][10];
 
+    S_PVTABLE PvTable[1];
+    int PvArray[MAXDEPTH];
+
 } S_BOARD;
 
 /*UTIL*/
@@ -228,8 +246,10 @@ typedef struct{
 #define MFLAGCAP 0x7C000
 #define MFLAGPROM 0xF00000
 
+#define NOMOVE 0
+
 //MACROS
-#define FR2SQ(f,r) ((21 + (f)) + (r*10))
+#define FR2SQ(f,r) ((21 + (f)) + ((r)*10))
 #define SQ64(sq120) (Sq120ToSq64[(sq120)])
 #define SQ120(sq64) (Sq64ToSq120[(sq64)])
 #define POP(b) PopBit(b)
@@ -296,6 +316,7 @@ extern int SqAttacked(const int sq, const int side, const S_BOARD* pos);
 extern char* PrMove(const int move);
 extern char* SqStr(const int sq);
 extern void PrintMoveList(const S_MOVELIST* list);
+extern int ParseMove(char* ptrChar, S_BOARD* pos);
 //validate.c
 extern int SqOnBoard(const int sq);
 extern int SideValid(const int side);
@@ -304,6 +325,8 @@ extern int FileRankValid(const int fr);
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 //movegen.c
+
+extern int MoveExists(S_BOARD* pos, const int move);
 // extern void AddQuietMove(const S_BOARD* pos, int move, S_MOVELIST* list);
 // extern void AddCaptureMove(const S_BOARD* pos, int move, S_MOVELIST* list);
 // extern void AddEnPassantMove(const S_BOARD* pos, int move, S_MOVELIST* list);
@@ -314,5 +337,18 @@ extern int MakeMove(S_BOARD* pos, int move);
 extern void TakeMove(S_BOARD* pos);
 //perft.c
 extern void PerftTest(int depth, S_BOARD* pos);
+
+//search.c
+extern void SearchPosition(S_BOARD* pos);
+extern int IsRepetition(const S_BOARD* pos);
+
+//misc.c
+extern int GetTimeMs();
+
+//pvtable.c
+extern void InitPvTable(S_PVTABLE* table);
+extern void StorePvMove(const S_BOARD* pos, const int move);
+extern int ProbePvtable(const S_BOARD* pos);
+extern int GetPvLine(const int depth, S_BOARD* pos);
 
 #endif

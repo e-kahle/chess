@@ -15,13 +15,14 @@
 #define CASTLE "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1 "
 #define PERFT2 "4k3/8/8/8/8/8/8/4K2R w K - 0 1 "
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
+#define V48 "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N w - - 0 1 "
 #define PERFT3 "8/8/1B6/7b/7k/8/2B1b3/7K w - - 0 1 "
 
 void ShowSqAtBySide(const int side, const S_BOARD* pos){
     int rank = 0;
     int file = 0;
     int sq = 0;
+
     printf("\n \n Squares attacked by: %c\n", SideChar[side]);
     for(rank = RANK_8; rank >= RANK_1; --rank){
         for(file = FILE_A; file <= FILE_H; ++file){
@@ -47,15 +48,57 @@ void PrintBin(int move){
     }
     N(2);
 }
+
 int main(){
     AllInit();
     S_BOARD board[1];
     S_MOVELIST list[1];
-    ParseFen(PERFT3, board);
+    ParseFen(START_FEN, board);
     //PrintBoard(board);
-    printf("HI");
+    //printf("HI");
     
-    PerftTest(6, board);
+    //PerftTest(6, board);
+    char input[6];
+    int Move = NOMOVE;
+    int PvNum = 0;
+    int Max = 0;
+    while(TRUE){
+        PrintBoard(board);
+        printf("Please enter a move >");
+        fgets(input, 6, stdin);
+        if(input[0] == 'q'){
+            break;
+        } else if(input[0] == 't'){
+            TakeMove(board);
+        }else if(input[0] == 'p'){
+            // if(input[1] < '1' || input[1] > '9') PerftTest(4, board);
+            // else PerftTest(input[1]-'0', board);
+            Max = GetPvLine(4, board);
+
+            printf("PvLine of %d Moves: ", Max);
+            for(PvNum = 0; PvNum < Max; ++PvNum){
+                Move = board->PvArray[PvNum];
+                printf(" %s", PrMove(Move));
+            }
+            N(1);
+        }
+        else{
+            Move = ParseMove(input, board);
+            if(Move != NOMOVE){
+                StorePvMove(board, Move);               
+                MakeMove(board, Move);
+               
+                // if(IsRepetition(board)){
+                //     printf("REP SEEN\n");
+                // }
+            }else{
+                printf("Move Not Parsed: %s\n", input);
+            }
+        }
+        fflush(stdin);
+    }
+
+
     // GenerateAllMoves(board, list);
     // ASSERT(CheckBoard(board));
     // int MoveNum = 0;
