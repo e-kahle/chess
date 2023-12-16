@@ -41,10 +41,14 @@ void ClearPvTable(S_PVTABLE* table){
 }
 
 void InitPvTable(S_PVTABLE* table){
+    
     table->numEntries = PvSize / sizeof(S_PVENTRY);
     table->numEntries -=2;
-
-    free(table->pTable);
+    //printf("Address of table->pTable before free: %p\n", (void*)table->pTable);
+    if(table->pTable != NULL){
+        //printf("hi");
+        free(table->pTable);
+    }
     table->pTable = (S_PVENTRY *) malloc(table->numEntries * sizeof(S_PVENTRY));
     ClearPvTable(table);
     printf("PvTable init complete with %d entries \n", table->numEntries);

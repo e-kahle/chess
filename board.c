@@ -109,8 +109,9 @@ int ParseFen(char* fen, S_BOARD* pos){
     int i = 0;
     int sq64 = 0;
     int sq120 = 0;
+    // printf("hi");
     ResetBoard(pos);
-
+    
     while((rank >= RANK_1) && *fen){
         count = 1;
         switch(*fen){

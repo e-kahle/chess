@@ -53,6 +53,7 @@ int main(){
     AllInit();
     S_BOARD board[1];
     S_MOVELIST list[1];
+    board->PvTable->pTable = NULL;
     ParseFen(START_FEN, board);
     //PrintBoard(board);
     //printf("HI");
