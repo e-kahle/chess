@@ -17,88 +17,71 @@
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define V48 "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N w - - 0 1 "
 #define PERFT3 "8/8/1B6/7b/7k/8/2B1b3/7K w - - 0 1 "
+#define WAC1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
-void ShowSqAtBySide(const int side, const S_BOARD* pos){
-    int rank = 0;
-    int file = 0;
-    int sq = 0;
-
-    printf("\n \n Squares attacked by: %c\n", SideChar[side]);
-    for(rank = RANK_8; rank >= RANK_1; --rank){
-        for(file = FILE_A; file <= FILE_H; ++file){
-            sq = FR2SQ(file, rank);
-            if(SqAttacked(sq, side, pos) == TRUE){
-                printf("X");
-            }else{
-                printf("-");
-            }
-
-        }
-        printf("\n");
-    }
-    printf("\n\n");
-}
-void PrintBin(int move){
-    int index = 0;
-    printf("As binary:\n");
-    for(index = 27; index >= 0; index--){
-        if((1<<index) & move) printf("1");
-        else printf("0");
-        if(index != 28 && index %4 ==0) printf(" ");
-    }
-    N(2);
-}
 
 int main(){
     AllInit();
-    S_BOARD board[1];
-    S_MOVELIST list[1];
-    board->PvTable->pTable = NULL;
-    ParseFen(START_FEN, board);
-    //PrintBoard(board);
-    //printf("HI");
+    // printf("hi");
+    Uci_Loop();
+    return 0;
+    // S_BOARD board[1];
+    // S_MOVELIST list[1];
+    // S_SEARCHINFO info[1];
+    // board->PvTable->pTable = NULL;
+    // InitPvTable(board->PvTable);
+    // ParseFen(WAC1, board);
+    // // printf("eval: %d\n", EvalPosition(board));
+    // // printf("mat white: %d \n", board->material[WHITE]);
+    // //     printf("mat black: %d \n", board->material[BLACK]);
+
+    // //PrintBoard(board);
+    // //printf("HI");
     
-    //PerftTest(6, board);
-    char input[6];
-    int Move = NOMOVE;
-    int PvNum = 0;
-    int Max = 0;
-    while(TRUE){
-        PrintBoard(board);
-        printf("Please enter a move >");
-        fgets(input, 6, stdin);
-        if(input[0] == 'q'){
-            break;
-        } else if(input[0] == 't'){
-            TakeMove(board);
-        }else if(input[0] == 'p'){
-            // if(input[1] < '1' || input[1] > '9') PerftTest(4, board);
-            // else PerftTest(input[1]-'0', board);
-            Max = GetPvLine(4, board);
+    // //PerftTest(6, board);
+    // char input[6];
+    // int Move = NOMOVE;
+    // int PvNum = 0;
+    // int Max = 0;
+    // while(TRUE){
+    //     PrintBoard(board);
+    //     printf("Please enter a move >");
+    //     fgets(input, 6, stdin);
+    //     if(input[0] == 'q'){
+    //         break;
+    //     } else if(input[0] == 't'){
+    //         TakeMove(board);
+    //     }else if(input[0] == 's'){
+    //         info->depth = 6;
+    //         info->starttime = GetTimeMs();
+    //         info->stoptime = GetTimeMs() + 200000;
+    //         SearchPosition(board, info);
+    //         // if(input[1] < '1' || input[1] > '9') PerftTest(4, board);
+    //         // else PerftTest(input[1]-'0', board);
+    //         // Max = GetPvLine(4, board);
 
-            printf("PvLine of %d Moves: ", Max);
-            for(PvNum = 0; PvNum < Max; ++PvNum){
-                Move = board->PvArray[PvNum];
-                printf(" %s", PrMove(Move));
-            }
-            N(1);
-        }
-        else{
-            Move = ParseMove(input, board);
-            if(Move != NOMOVE){
-                StorePvMove(board, Move);               
-                MakeMove(board, Move);
-               
-                // if(IsRepetition(board)){
-                //     printf("REP SEEN\n");
-                // }
-            }else{
-                printf("Move Not Parsed: %s\n", input);
-            }
-        }
-        fflush(stdin);
-    }
-
+    //         // printf("PvLine of %d Moves: ", Max);
+    //         // for(PvNum = 0; PvNum < Max; ++PvNum){
+    //         //     Move = board->PvArray[PvNum];
+    //         //     printf(" %s", PrMove(Move));
+    //         // }
+    //         // N(1);
+    //     }
+    //     else{
+    //         Move = ParseMove(input, board);
+    //         if(Move != NOMOVE){
+    //             StorePvMove(board, Move);
+    //             MakeMove(board, Move);
+    //             // if(IsRepetition(board)){
+    //             //     printf("REP SEEN\n");
+    //             // }
+    //         }else{
+    //             printf("Move Not Parsed: %s\n", input);
+    //         }
+    //     }
+    //     fflush(stdin);
+    // }
+    // free(board->PvTable->pTable);
 
     // GenerateAllMoves(board, list);
     // ASSERT(CheckBoard(board));
@@ -231,3 +214,34 @@ int main(){
     // PrintBitBoard(playBitBoard);
     return 0;
 }
+
+// void ShowSqAtBySide(const int side, const S_BOARD* pos){
+//     int rank = 0;
+//     int file = 0;
+//     int sq = 0;
+
+//     printf("\n \n Squares attacked by: %c\n", SideChar[side]);
+//     for(rank = RANK_8; rank >= RANK_1; --rank){
+//         for(file = FILE_A; file <= FILE_H; ++file){
+//             sq = FR2SQ(file, rank);
+//             if(SqAttacked(sq, side, pos) == TRUE){
+//                 printf("X");
+//             }else{
+//                 printf("-");
+//             }
+
+//         }
+//         printf("\n");
+//     }
+//     printf("\n\n");
+// }
+// void PrintBin(int move){
+//     int index = 0;
+//     printf("As binary:\n");
+//     for(index = 27; index >= 0; index--){
+//         if((1<<index) & move) printf("1");
+//         else printf("0");
+//         if(index != 28 && index %4 ==0) printf(" ");
+//     }
+//     N(2);
+// }

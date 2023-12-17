@@ -180,6 +180,24 @@ typedef struct {
     U64 posKey;
 } S_UNDO;
 
+typedef struct {
+    int starttime;
+    int stoptime;
+    int depth;
+    int depthset;
+    int timeset;
+    int movestogo;
+    int infinite;
+
+    long nodes;
+
+    int quit;
+    int stopped;
+
+    float fh;
+    float fhf;
+} S_SEARCHINFO;
+
 typedef struct{
     int pieces[BRD_SQ_NUM];
     //each bit = 1 if pawn of that color on that square, 0 otherwise
@@ -216,7 +234,13 @@ typedef struct{
     S_PVTABLE PvTable[1];
     int PvArray[MAXDEPTH];
 
+    int searchHistory[13][BRD_SQ_NUM];
+    int searchKillers[2][MAXDEPTH];
+
 } S_BOARD;
+
+
+
 
 /*UTIL*/
 #define N(n) \
@@ -247,6 +271,7 @@ typedef struct{
 #define MFLAGPROM 0xF00000
 
 #define NOMOVE 0
+#define INFINITE 30000
 
 //MACROS
 #define FR2SQ(f,r) ((21 + (f)) + ((r)*10))
@@ -325,8 +350,9 @@ extern int FileRankValid(const int fr);
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 //movegen.c
-
+extern int InitMvvLva();
 extern int MoveExists(S_BOARD* pos, const int move);
+extern void GenerateAllCaps(const S_BOARD* pos, S_MOVELIST* list);
 // extern void AddQuietMove(const S_BOARD* pos, int move, S_MOVELIST* list);
 // extern void AddCaptureMove(const S_BOARD* pos, int move, S_MOVELIST* list);
 // extern void AddEnPassantMove(const S_BOARD* pos, int move, S_MOVELIST* list);
@@ -339,16 +365,23 @@ extern void TakeMove(S_BOARD* pos);
 extern void PerftTest(int depth, S_BOARD* pos);
 
 //search.c
-extern void SearchPosition(S_BOARD* pos);
-extern int IsRepetition(const S_BOARD* pos);
+extern void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info);
+//extern int IsRepetition(const S_BOARD* pos);
 
 //misc.c
 extern int GetTimeMs();
-
+extern void ReadInput(S_SEARCHINFO* info);
 //pvtable.c
 extern void InitPvTable(S_PVTABLE* table);
 extern void StorePvMove(const S_BOARD* pos, const int move);
-extern int ProbePvtable(const S_BOARD* pos);
+extern int ProbePvTable(const S_BOARD* pos);
 extern int GetPvLine(const int depth, S_BOARD* pos);
+extern void ClearPvTable(S_PVTABLE* table);
 
+//evaluate.c
+extern int EvalPosition(const S_BOARD* pos);
+
+
+//uci.c
+extern void Uci_Loop();
 #endif

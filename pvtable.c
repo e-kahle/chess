@@ -7,7 +7,7 @@
 
 int GetPvLine(const int depth, S_BOARD* pos){
     ASSERT(depth < MAXDEPTH);
-    int move = ProbePvtable(pos);
+    int move = ProbePvTable(pos);
     int count = 0;
     while(move != NOMOVE && count < depth){
         ASSERT(count < MAXDEPTH);
@@ -17,7 +17,7 @@ int GetPvLine(const int depth, S_BOARD* pos){
         } else{
             break;
         }
-        move = ProbePvtable(pos);
+        move = ProbePvTable(pos);
     }
     //this might cause bugs later if I read ply from fen
     while(pos->ply > 0){
@@ -51,11 +51,11 @@ void InitPvTable(S_PVTABLE* table){
     }
     table->pTable = (S_PVENTRY *) malloc(table->numEntries * sizeof(S_PVENTRY));
     ClearPvTable(table);
-    printf("PvTable init complete with %d entries \n", table->numEntries);
+    //printf("PvTable init complete with %d entries \n", table->numEntries);
 
 }
 
-int ProbePvtable(const S_BOARD* pos){
+int ProbePvTable(const S_BOARD* pos){
     int index = pos->posKey % pos->PvTable->numEntries;
     ASSERT(index >= 0 && index <= pos->PvTable->numEntries -1);
 
@@ -67,7 +67,7 @@ int ProbePvtable(const S_BOARD* pos){
 
 void StorePvMove(const S_BOARD* pos, const int move){
     int index = pos->posKey % pos->PvTable->numEntries;
-    ASSERT(index >= 0 && index <= pos->PVTable->numEntries -1 );
+    ASSERT(index >= 0 && index <= pos->PvTable->numEntries -1 );
 
     pos->PvTable->pTable[index].move = move;
     pos->PvTable->pTable[index].posKey = pos->posKey;
