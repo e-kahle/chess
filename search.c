@@ -150,6 +150,13 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD* pos, S_SEARCHINFO*
         return EvalPosition(pos);
     }
 
+    int InCheck = SqAttacked(pos->KingSq[pos->side], pos->side^1, pos);
+    if(InCheck == TRUE){
+        depth++;
+    }
+    
+
+
     S_MOVELIST list[1];
     GenerateAllMoves(pos, list);
     int MoveNum = 0;
@@ -236,14 +243,35 @@ void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info){
 
         pvMoves = GetPvLine(currentDepth, pos);
         bestMove = pos->PvArray[0];
-        printf("info score cp %d depth %d nodes %ld time %d ",  bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
-        printf("pv");
-        for(pvNum = 0; pvNum < pvMoves; ++pvNum){
-            printf(" %s", PrMove(pos->PvArray[pvNum]));
+        if(info->GAME_MODE == UCIMODE){
+            printf("info score cp %d depth %d nodes %ld time %d ",  bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
         }
-        N(1);
+        else if(info->GAME_MODE == XBOARDMODE && info->POST_THINKING == TRUE){
+            printf("%d %d %d %ld ", currentDepth, bestScore, (GetTimeMs() - info->starttime)/10, info->nodes);
+        }else if(info->POST_THINKING == TRUE){
+            printf("score:%d depth:%d nodes:%ld time:%d(ms) ", bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
+        }
+        if(info->GAME_MODE == UCIMODE || info->POST_THINKING == TRUE){
+            pvMoves = GetPvLine(currentDepth, pos);
+            printf("pv");
+            for(pvNum = 0; pvNum < pvMoves; ++pvNum){
+                printf(" %s", PrMove(pos->PvArray[pvNum]));
+            }
+            N(1);
+        }
+            
         //printf("Ordering %.2f\n", (info->fhf / info->fh));
     }
     //info score cp 13 depth 1 nodes 13 time 15 pv f1b5
-    printf("bestmove %s\n", PrMove(bestMove));
+    if(info->GAME_MODE == UCIMODE){
+        printf("bestmove %s\n", PrMove(bestMove));
+    }
+    else if(info->GAME_MODE == XBOARDMODE){
+        printf("move %s\n", PrMove(bestMove));
+        MakeMove(pos, bestMove);
+    }else{
+        printf("\n\n***!! Stinkfish makes move %s !!***\n\n", PrMove(bestMove));
+        MakeMove(pos, bestMove);
+        PrintBoard(pos);
+    }
 }

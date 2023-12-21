@@ -1,6 +1,8 @@
 #include "defs.h"
 #include <stdio.h>
 #include "stdlib.h"
+#include "string.h"
+#include "math.h"
 #define PAWNTST "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1 "
 #define PAWNTSTB "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1 "
 #define FENTEST "8/3q1p2/8/5P2/4Q3/8/8/8 w - - 2 1 "
@@ -19,11 +21,67 @@
 #define PERFT3 "8/8/1B6/7b/7k/8/2B1b3/7K w - - 0 1 "
 #define WAC1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
-
+void PrintStats(int w, int l, int d){
+    double m = (double)w + ((double)d/2);
+    int n = w + l + d;
+    m/= n;
+    double s = (double)w*((double)1 - m)*((double)1-m) 
+            + (double)d*((double)1/2 - m)*((double)1/2 - m)
+            + (double)l * m*m;
+    s/= n-1;
+    N(1);
+    printf("The sample mean is: %lf", m);
+    N(1);
+    printf("The sample variance is: %lf", s);
+    N(1);
+    printf("With 95%% confidence, we can say that the probability of Stinkfish against the tested engine(s) is:");
+    N(1);
+    printf("[%lf - %lf]", m - 1.96*(s/sqrt(n)), m+ 1.96*(s/sqrt(n)));
+}
 int main(){
     AllInit();
     // printf("hi");
-    Uci_Loop();
+    S_BOARD pos[1];
+    S_SEARCHINFO info[1];
+    InitPvTable(pos->PvTable);
+    printf("Welcome to Stinkfish! Type 'stinkfish' for console mode...\n");
+    char line[256];
+    while(TRUE){
+        memset(&line[0], 0, sizeof(line));
+        fflush(stdout);
+        if(!fgets(line, 256, stdin)){
+            continue;
+        }
+        if(line[0] == '\n') continue;
+        if(!strncmp(line, "uci", 3)){
+            Uci_Loop(pos, info);
+            if(info->quit == TRUE) break;
+            continue;
+        }else if(!strncmp(line, "xboard", 6)){
+            XBoard_Loop(pos, info);
+            if(info->quit == TRUE) break;
+            continue;
+        }else if(!strncmp(line, "stinkfish", 9)){
+            Console_Loop(pos, info);
+            if(info->quit == TRUE) break;
+            continue;
+        }else if(!strncmp(line, "quit", 4)){
+            break;
+        }
+        else if(!strncmp(line, "stats", 5)){
+            int w, l, d;
+            printf("Enter the number of wins (<=1000000)\n");
+            scanf("%d", &w);
+            printf("Enter the number of losses (<=1000000)\n");
+            scanf("%d", &l);
+            printf("Enter the number of draws (<=1000000)\n");
+            scanf("%d", &d);
+            PrintStats(w, l, d);
+            N(1);
+            continue;
+        }
+    }
+    free(pos->PvTable->pTable);
     return 0;
     // S_BOARD board[1];
     // S_MOVELIST list[1];

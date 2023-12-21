@@ -2,7 +2,7 @@
 #define DEFS_H
 #include "stdlib.h"
 #include "stdio.h"
-// #define DEBUG
+ //#define DEBUG
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -25,7 +25,7 @@ typedef unsigned long long U64;
 
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
+enum {UCIMODE, XBOARDMODE, CONSOLEMODE};
 enum
 {
     EMPTY,
@@ -196,6 +196,9 @@ typedef struct {
 
     float fh;
     float fhf;
+
+    int GAME_MODE;
+	int POST_THINKING;
 } S_SEARCHINFO;
 
 typedef struct{
@@ -285,6 +288,7 @@ typedef struct{
 #define IsRQ(p) (PieceRookQueen[(p)])
 #define IsKn(p) (PieceKnight[(p)])
 #define IsKi(p) (PieceKing[(p)])
+#define MIRROR64(sq) (Mirror64[(sq)])
 
 
 //Globals
@@ -316,6 +320,15 @@ extern int PieceRookQueen[13];
 extern int PieceBishopQueen[13];
 extern int PieceSlides[13];
 extern int PiecePawn[13];
+
+extern int Mirror64[64];
+
+extern U64 FileBBMask[8];
+extern U64 RankBBMask[8];
+
+extern U64 BlackPassedMask[64];
+extern U64 WhitePassedMask[64];
+extern U64 IsolatedMask[64];
 // extern const int KnDir[8] = {-8, -19, -21, -12, 8, 9, 21, 12};
 // extern const int RkDir[4] = {-1, -10, 1, 10};
 // extern const int BiDir[4] = {-9, -11, 11, 9};
@@ -335,6 +348,7 @@ extern int ParseFen(char* fen, S_BOARD* pos);
 extern void PrintBoard(const S_BOARD* pos);
 extern void UpdateListsMaterial(S_BOARD *pos);
 extern int CheckBoard(const S_BOARD *pos);
+extern void MirrorBoard(S_BOARD* pos);
 //attack.c
 extern int SqAttacked(const int sq, const int side, const S_BOARD* pos);
 //io.c
@@ -349,6 +363,7 @@ extern int FileRankValid(const int fr);
 
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
+extern void MirrorEvalTest(S_BOARD *pos);
 //movegen.c
 extern int InitMvvLva();
 extern int MoveExists(S_BOARD* pos, const int move);
@@ -383,5 +398,10 @@ extern int EvalPosition(const S_BOARD* pos);
 
 
 //uci.c
-extern void Uci_Loop();
+extern void Uci_Loop(S_BOARD* pos, S_SEARCHINFO* info);
+
+//xboard.c
+extern void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info);
+extern void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info);
+
 #endif
