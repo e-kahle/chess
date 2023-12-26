@@ -40,10 +40,12 @@ void PrintStats(int w, int l, int d){
 }
 int main(){
     AllInit();
-    // printf("hi");
+    //printf("hi");
     S_BOARD pos[1];
     S_SEARCHINFO info[1];
-    InitPvTable(pos->PvTable);
+    info->quit = FALSE;
+    pos->HashTable->pTable = NULL;
+    InitHashTable(pos->HashTable);
     printf("Welcome to Stinkfish! Type 'stinkfish' for console mode...\n");
     char line[256];
     while(TRUE){
@@ -81,7 +83,7 @@ int main(){
             continue;
         }
     }
-    free(pos->PvTable->pTable);
+    free(pos->HashTable->pTable);
     return 0;
     // S_BOARD board[1];
     // S_MOVELIST list[1];

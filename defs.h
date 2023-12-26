@@ -2,7 +2,7 @@
 #define DEFS_H
 #include "stdlib.h"
 #include "stdio.h"
- //#define DEBUG
+//#define DEBUG
 #ifndef DEBUG
 #define ASSERT(n)
 #else
@@ -160,16 +160,23 @@ typedef struct {
     int count;
 } S_MOVELIST;
 
-
+enum {  HFNONE, HFALPHA, HFBETA, HFEXACT};
 typedef struct {
     U64 posKey;
     int move;
-} S_PVENTRY;
+    int score;
+    int depth;
+    int flags;
+} S_HASHENTRY;
 
 typedef struct {
-    S_PVENTRY* pTable;
+    S_HASHENTRY* pTable;
     int numEntries;
-} S_PVTABLE;
+    int newWrite;
+    int overWrite;
+    int hit;
+    int cut;
+} S_HASHTABLE;
 
 
 typedef struct {
@@ -196,6 +203,7 @@ typedef struct {
 
     float fh;
     float fhf;
+    int nullCut;
 
     int GAME_MODE;
 	int POST_THINKING;
@@ -234,7 +242,7 @@ typedef struct{
     //piece list (initialized to NO_SQ, pList[piece][num] = sq)
     int pList[13][10];
 
-    S_PVTABLE PvTable[1];
+    S_HASHTABLE HashTable[1];
     int PvArray[MAXDEPTH];
 
     int searchHistory[13][BRD_SQ_NUM];
@@ -275,6 +283,8 @@ typedef struct{
 
 #define NOMOVE 0
 #define INFINITE 30000
+
+#define ISMATE (INFINITE - MAXDEPTH)
 
 //MACROS
 #define FR2SQ(f,r) ((21 + (f)) + ((r)*10))
@@ -374,8 +384,12 @@ extern void GenerateAllCaps(const S_BOARD* pos, S_MOVELIST* list);
 // extern void AddWhitePawnCapMove( const S_BOARD* pos, const int from, const int to, const int cap, S_MOVELIST* list);
 // extern void AddWhitePawnMove( const S_BOARD* pos, const int from, const int to, S_MOVELIST* list);
 extern void GenerateAllMoves(const S_BOARD* pos, S_MOVELIST* list);
+
+//makemove.c
 extern int MakeMove(S_BOARD* pos, int move);
 extern void TakeMove(S_BOARD* pos);
+extern void TakeNullMove(S_BOARD* pos);
+extern void MakeNullMove(S_BOARD* pos);
 //perft.c
 extern void PerftTest(int depth, S_BOARD* pos);
 
@@ -387,11 +401,15 @@ extern void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info);
 extern int GetTimeMs();
 extern void ReadInput(S_SEARCHINFO* info);
 //pvtable.c
-extern void InitPvTable(S_PVTABLE* table);
-extern void StorePvMove(const S_BOARD* pos, const int move);
+// extern void InitPvTable(S_PVTABLE* table);
+// extern void StorePvMove(const S_BOARD* pos, const int move);
 extern int ProbePvTable(const S_BOARD* pos);
 extern int GetPvLine(const int depth, S_BOARD* pos);
-extern void ClearPvTable(S_PVTABLE* table);
+extern int ProbeHashEntry(S_BOARD* pos, int* move, int* score, int alpha, int beta, int depth );
+extern void StoreHashEntry( S_BOARD* pos, const int move, int score, const int flags, const int depth);
+extern void InitHashTable(S_HASHTABLE* table);
+extern void ClearHashTable(S_HASHTABLE* table);
+// extern void ClearPvTable(S_PVTABLE* table);
 
 //evaluate.c
 extern int EvalPosition(const S_BOARD* pos);
