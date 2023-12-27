@@ -19,7 +19,7 @@ const int PolyKindOfPiece[13] = {
 
 void InitPolyBook(){
     EngineOptions->UseBook = FALSE;
-    FILE* pFile = fopen("performance.bin", "rb");
+    FILE* pFile = fopen("codekiddy.bin", "rb");
     if(pFile == NULL){
         printf("Book File Not Read\n");
     }else{
@@ -162,17 +162,23 @@ int GetBookMove(S_BOARD* board){
     int index = 0;
     S_POLY_BOOK_ENTRY* entry;
     unsigned short move;
+    unsigned short weight;
     const int MAXBOOKMOVES = 32;
     int bookMoves[MAXBOOKMOVES];
+    int bookMoveWeights[MAXBOOKMOVES];
     int tempMove = NOMOVE;
     int count = 0;
+    int totalWeight = 0;
     U64 polyKey = PolyKeyFromBoard(board);
     for(entry = entries; entry < entries + NumEntries; ++entry){
         if(polyKey == endian_swap_u64(entry->key)){
             move = endian_swap_u16(entry->move);
+            weight = endian_swap_u16(entry->weight);
             tempMove = ConvertPolyMoveToInternalMove(move, board);
             if(tempMove != NOMOVE){
-                bookMoves[count++] = tempMove;
+                bookMoves[count] = tempMove;
+                bookMoveWeights[count++] = weight;
+                totalWeight += weight;
                 if(count > MAXBOOKMOVES){
                     break;
                 }
@@ -181,16 +187,35 @@ int GetBookMove(S_BOARD* board){
         }
        
     }
+    printf("Listing Book Moves:\n");
+    for(index = 0; index < count; ++index){
+        printf("BookMove %d : %s | weight: %u\n", index+1, PrMove(bookMoves[index]), bookMoveWeights[index]);
+    }
     if(count != 0){
-        int randMove = rand() % count;
-        return bookMoves[randMove];
+        if(count == 1) return bookMoves[0];
+        double percents[count];
+        double cumPercents[count];
+        for(index = 0; index< count; ++index){
+            percents[index] = ((double)bookMoveWeights[index])/((double)totalWeight);
+            if(index > 0){
+                percents[index] += percents[index-1];
+            }
+             printf("Percent Cutoff for %s : %lf\n", PrMove(bookMoves[index]), percents[index]);
+        }
+        
+        double randPoint = (double)rand() / (double)RAND_MAX;
+        index = 0;
+        printf("RANDPOINT: %lf\n ", randPoint);
+        while(randPoint > percents[index] && index < count-1){
+            index++;
+        }
+        printf("index: %d\n", index);
+        printf("Move: %s\n", PrMove(bookMoves[index]));
+        return bookMoves[index];
     }else{
         return NOMOVE;
     }
-    // printf("Listing Book Moves:\n");
-    // for(index = 0; index < count; ++index){
-    //     printf("BookMove %d : %s\n", index+1, PrMove(bookMoves[index]));
-    // }
+    
 }
 
 

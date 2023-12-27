@@ -253,13 +253,12 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			continue;
 		}
 		
-		// if(!strcmp(command, "bookmove")){
-		// 	PrintBoard(pos);
-		// 	printf("BookMove: %s\n", )
-		// 	// printf("PolyKey: %llX\n", PolyKeyFromBoard(pos));
-		// 	GetBookMove(pos);
-		// 	continue;
-		// }
+		if(!strcmp(command, "bookmove")){
+			PrintBoard(pos);
+			// printf("PolyKey: %llX\n", PolyKeyFromBoard(pos));
+			GetBookMove(pos);
+			continue;
+		}
 
 		if(!strcmp(command, "memory")) {			
 			sscanf(inBuf, "memory %d", &MB);		
