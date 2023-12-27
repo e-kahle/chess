@@ -22,7 +22,7 @@ typedef unsigned long long U64;
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
 #define MAXDEPTH 64
-
+#define MAX_HASH 1024
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 enum {UCIMODE, XBOARDMODE, CONSOLEMODE};
@@ -250,7 +250,9 @@ typedef struct{
 
 } S_BOARD;
 
-
+typedef struct{
+    int UseBook;
+} S_OPTIONS;
 
 
 /*UTIL*/
@@ -339,6 +341,8 @@ extern U64 RankBBMask[8];
 extern U64 BlackPassedMask[64];
 extern U64 WhitePassedMask[64];
 extern U64 IsolatedMask[64];
+
+extern S_OPTIONS EngineOptions[1];
 // extern const int KnDir[8] = {-8, -19, -21, -12, 8, 9, 21, 12};
 // extern const int RkDir[4] = {-1, -10, 1, 10};
 // extern const int BiDir[4] = {-9, -11, 11, 9};
@@ -407,7 +411,7 @@ extern int ProbePvTable(const S_BOARD* pos);
 extern int GetPvLine(const int depth, S_BOARD* pos);
 extern int ProbeHashEntry(S_BOARD* pos, int* move, int* score, int alpha, int beta, int depth );
 extern void StoreHashEntry( S_BOARD* pos, const int move, int score, const int flags, const int depth);
-extern void InitHashTable(S_HASHTABLE* table);
+extern void InitHashTable(S_HASHTABLE* table, int MB);
 extern void ClearHashTable(S_HASHTABLE* table);
 // extern void ClearPvTable(S_PVTABLE* table);
 
@@ -421,5 +425,15 @@ extern void Uci_Loop(S_BOARD* pos, S_SEARCHINFO* info);
 //xboard.c
 extern void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info);
 extern void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info);
+
+//polybook.c
+extern U64 PolyKeyFromBoard(const S_BOARD* pos);
+extern void CleanPolyBook();
+extern void InitPolyBook();
+extern int GetBookMove(S_BOARD* board);
+//polykeys.c
+
+
+
 
 #endif

@@ -253,14 +253,22 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			continue;
 		}
 		
-		// if(!strcmp(command, "memory")) {			
-		// 	sscanf(inBuf, "memory %d", &MB);		
-		//     if(MB < 4) MB = 4;
-		// 	if(MB > MAX_HASH) MB = MAX_HASH;
-		// 	printf("Set Hash to %d MB\n",MB);
-		// 	InitHashTable(pos->HashTable, MB);
+		// if(!strcmp(command, "bookmove")){
+		// 	PrintBoard(pos);
+		// 	printf("BookMove: %s\n", )
+		// 	// printf("PolyKey: %llX\n", PolyKeyFromBoard(pos));
+		// 	GetBookMove(pos);
 		// 	continue;
 		// }
+
+		if(!strcmp(command, "memory")) {			
+			sscanf(inBuf, "memory %d", &MB);		
+		    if(MB < 4) MB = 4;
+			if(MB > MAX_HASH) MB = MAX_HASH;
+			printf("Set Hash to %d MB\n",MB);
+			InitHashTable(pos->HashTable, MB);
+			continue;
+		}
 
 		if(!strcmp(command, "level")) {
 			sec = 0;

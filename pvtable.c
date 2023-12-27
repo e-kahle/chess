@@ -27,7 +27,7 @@ int GetPvLine(const int depth, S_BOARD* pos){
 }
 
 
-const int HashSize = 0x100000 * 16;
+// const int HashSize = 0x100000 * 16;
 
 
 
@@ -44,8 +44,8 @@ void ClearHashTable(S_HASHTABLE* table){
     table->newWrite = 0;
 }
 
-void InitHashTable(S_HASHTABLE* table){
-    
+void InitHashTable(S_HASHTABLE* table, const int MB ){
+    int HashSize = 0x100000 * MB;
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
     table->numEntries -=2;
     //printf("Address of table->pTable before free: %p\n", (void*)table->pTable);
@@ -56,8 +56,15 @@ void InitHashTable(S_HASHTABLE* table){
     // free(table->pTable);
     // printf("hi");
     table->pTable = (S_HASHENTRY *) malloc(table->numEntries * sizeof(S_HASHENTRY));
-    ClearHashTable(table);
-    printf("HashTable init complete with %d entries \n", table->numEntries);
+    
+    if(table->pTable == NULL){
+        printf("Hash Allocation Failed, trying %d MB... \n", MB/2);
+        InitHashTable(table, MB/2);
+    }else{
+        ClearHashTable(table);
+         printf("HashTable init complete with %d entries \n", table->numEntries);
+    }
+   
 
 }
 

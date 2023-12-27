@@ -38,14 +38,25 @@ void PrintStats(int w, int l, int d){
     N(1);
     printf("[%lf - %lf]", m - 1.96*(s/sqrt(n)), m+ 1.96*(s/sqrt(n)));
 }
-int main(){
+int main(int argc, char* argv[]){
     AllInit();
     //printf("hi");
+    
     S_BOARD pos[1];
+    //printf("PolyKey: %lld", PolyKeyFromBoard(pos));
     S_SEARCHINFO info[1];
     info->quit = FALSE;
     pos->HashTable->pTable = NULL;
-    InitHashTable(pos->HashTable);
+    InitHashTable(pos->HashTable, 64);
+    setbuf(stdin, NULL);
+    setbuf(stdout, NULL);
+    int ArgNum = 0;
+    for(ArgNum = 0; ArgNum < argc; ++ArgNum){
+        if(strncmp(argv[ArgNum], "NoBook", 6) == 0){
+            EngineOptions->UseBook = FALSE;
+            printf("Book OFF\n");
+        }
+    }
     printf("Welcome to Stinkfish! Type 'stinkfish' for console mode...\n");
     char line[256];
     while(TRUE){
@@ -84,6 +95,7 @@ int main(){
         }
     }
     free(pos->HashTable->pTable);
+    CleanPolyBook();
     return 0;
     // S_BOARD board[1];
     // S_MOVELIST list[1];

@@ -5,7 +5,7 @@
 #define INPUTBUFFER 400*6
 //go depth 6 wtime 18000 btime 100000 binc 1000 winc 1000 movetime 1000 movestogo 40
 void ParseGo(char* line, S_SEARCHINFO* info, S_BOARD* pos){
-    int depth = -1, movestogo = 30, movetime = -1;
+    int depth = -1, movestogo = 45, movetime = -1;
     int time = -1, inc = 0;
     char* ptr = NULL;
     info->timeset = FALSE;
@@ -44,8 +44,8 @@ void ParseGo(char* line, S_SEARCHINFO* info, S_BOARD* pos){
 
     if(time != -1){
         info->timeset = TRUE;
-        time /= movestogo;
-        time -= 50;
+        time /= (pos->ply < 60) ? 50 : movestogo;
+        if(time > 60) time -= 50;
         info->stoptime = info->starttime + time + inc;
     }
 
@@ -88,7 +88,7 @@ void ParsePosition(char* lineIn, S_BOARD* pos){
             ptrChar++;
         }
     }
-    PrintBoard(pos);
+    //  PrintBoard(pos);
 }
 
 void Uci_Loop(S_BOARD* pos, S_SEARCHINFO* info){
@@ -99,9 +99,10 @@ void Uci_Loop(S_BOARD* pos, S_SEARCHINFO* info){
 
     printf("id name %s\n", NAME);
     printf("id author EKahle\n");
+    printf("option name Hash type spin default 64 min 4 max %d\n",MAX_HASH);
+	printf("option name Book type check default true\n");
     printf("uciok\n");
-
-
+    int MB = 64;
     while(TRUE){
         memset(&line[0], 0, sizeof(line));
         fflush(stdout);
@@ -124,7 +125,23 @@ void Uci_Loop(S_BOARD* pos, S_SEARCHINFO* info){
             printf("id name %s\n", NAME);
             printf("id author EKahle\n");
             printf("uciok\n");
-        }
+        }else if(!strncmp(line, "setoption name Hash value ", 26)){
+            sscanf(line, "%*s %*s %*s %*s %d", &MB);
+            if(MB < 4) MB = 4;
+            if(MB > MAX_HASH) MB = MAX_HASH;
+            printf("Set Hash to %d MB \n", MB);
+            InitHashTable(pos->HashTable, MB);
+        } else if(!strncmp(line, "setoption name Book value ", 26)){
+            char *ptrTrue = NULL;
+            ptrTrue = strstr(line, "true");
+            if(ptrTrue != NULL){
+                //book on
+                EngineOptions->UseBook = TRUE;
+            }else {
+                //book off
+                EngineOptions->UseBook = FALSE;
+            }
+        } 
         if(info->quit) break;
     }
     //free(pos->PvTable->pTable);
