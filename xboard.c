@@ -327,7 +327,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
 void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
-	printf("Welcome to Stinkfish In Console Mode!\n");
+	printf("Welcome to TTCE In Console Mode!\n");
 	printf("Type help for commands\n\n");
 
 	info->GAME_MODE = CONSOLEMODE;
@@ -359,7 +359,7 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			SearchPosition(pos, info);
 		}
 
-		printf("\nStinkfish > ");
+		printf("\nTTCE > ");
 
 		fflush(stdout);
 

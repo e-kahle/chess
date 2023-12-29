@@ -44,7 +44,13 @@ void ParseGo(char* line, S_SEARCHINFO* info, S_BOARD* pos){
 
     if(time != -1){
         info->timeset = TRUE;
-        time /= (pos->ply < 60) ? 50 : movestogo;
+        //not blitz
+        if(time >= 180000){
+            time /= 30;
+        }
+        else{ //blitz
+            time /= (pos->ply < 60) ? 50 : movestogo;
+        }
         if(time > 60) time -= 50;
         info->stoptime = info->starttime + time + inc;
     }

@@ -1,2 +1,4 @@
+SOURCES=$(wildcard *.c)
+NAME=ttce1tt
 all:
-	gcc vice.c init.c bitboards.c perft.c hashkeys.c pvtable.c board.c data.c uci.c evaluate.c attack.c io.c movegen.c validate.c xboard.c polykeys.c polybook.c search.c misc.c makemove.c -o TTCEtest -O1
+	gcc $(SOURCES) -o $(NAME) -O1

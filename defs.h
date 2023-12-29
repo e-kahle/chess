@@ -284,9 +284,9 @@ typedef struct{
 #define MFLAGPROM 0xF00000
 
 #define NOMOVE 0
-#define INFINITE 30000
+#define INF_BOUND 30000
 
-#define ISMATE (INFINITE - MAXDEPTH)
+#define ISMATE (INF_BOUND - MAXDEPTH)
 
 //MACROS
 #define FR2SQ(f,r) ((21 + (f)) + ((r)*10))

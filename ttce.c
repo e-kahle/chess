@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
             printf("Book OFF\n");
         }
     }
-    printf("Welcome to Stinkfish! Type 'stinkfish' for console mode...\n");
+    printf("Welcome to Thomas the Chess Engine (TTCE) 1.0! Type 'ttce' for console mode...\n");
     char line[256];
     while(TRUE){
         memset(&line[0], 0, sizeof(line));
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
             XBoard_Loop(pos, info);
             if(info->quit == TRUE) break;
             continue;
-        }else if(!strncmp(line, "stinkfish", 9)){
+        }else if(!strncmp(line, "ttce", 4)){
             Console_Loop(pos, info);
             if(info->quit == TRUE) break;
             continue;

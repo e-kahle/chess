@@ -70,7 +70,7 @@ static void ClearForSearch(S_BOARD* pos, S_SEARCHINFO* info){
 static int Quiescence(int alpha, int beta, S_BOARD* pos, S_SEARCHINFO* info){
     ASSERT(CheckBoard(pos));
 
-    if((info->nodes & 1023) == 0){
+    if((info->nodes & 2047) == 0){
         CheckUp(info);
         if(info->stopped == TRUE) return 0;
     }
@@ -99,7 +99,7 @@ static int Quiescence(int alpha, int beta, S_BOARD* pos, S_SEARCHINFO* info){
     int Legal = 0;
     int OldAlpha = alpha;
     int BestMove = NOMOVE;
-    Score = -INFINITE;
+    Score = -INF_BOUND;
     int PvMove = ProbePvTable(pos);
 
     for(MoveNum = 0; MoveNum < list->count; ++MoveNum){
@@ -139,7 +139,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD* pos, S_SEARCHINFO*
         return Quiescence(alpha, beta, pos, info);
     }
 
-    if((info->nodes & 1023) == 0){
+    if((info->nodes & 2047) == 0){
         CheckUp(info);
         if(info->stopped == TRUE) return 0;
     }
@@ -160,7 +160,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD* pos, S_SEARCHINFO*
         depth++;
     }
     
-    int Score = -INFINITE;
+    int Score = -INF_BOUND;
     int PvMove = NOMOVE;
 
     if(ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE){
@@ -168,7 +168,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD* pos, S_SEARCHINFO*
         return Score;
     }
 
-    if(DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 0) && depth >= 4){
+    if(DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 1) && depth >= 4){
         MakeNullMove(pos);
         Score = -AlphaBeta(-beta, -beta + 1, depth -4, pos, info, FALSE);
         TakeNullMove(pos);
@@ -188,8 +188,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD* pos, S_SEARCHINFO*
     int Legal = 0;
     int OldAlpha = alpha;
     int BestMove = NOMOVE;
-    Score = -INFINITE;
-    int BestScore = -INFINITE;
+    Score = -INF_BOUND;
+    int BestScore = -INF_BOUND;
     //PvMove = ProbePvTable(pos);
     if(PvMove != NOMOVE){
         for(MoveNum = 0; MoveNum < list->count; ++MoveNum){
@@ -262,7 +262,7 @@ void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info){
         //search AlphaBeta
 
     int bestMove = NOMOVE;
-    int bestScore = -INFINITE;
+    int bestScore = -INF_BOUND;
     int currentDepth = 0;
     int pvMoves = 0;
     int pvNum = 0;
@@ -273,7 +273,7 @@ void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info){
     }
     if(bestMove == NOMOVE){
         for(currentDepth = 1; currentDepth <= info->depth; ++currentDepth){
-            bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info, TRUE);
+            bestScore = AlphaBeta(-INF_BOUND, INF_BOUND, currentDepth, pos, info, TRUE);
 
             if(info->stopped == TRUE){
                 break;
