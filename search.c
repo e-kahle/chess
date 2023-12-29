@@ -262,7 +262,7 @@ int SearchPosition_Thread(void* data){
     memcpy(pos, searchData->originalPosition, sizeof(S_BOARD));
     SearchPosition(pos, searchData->info, searchData->ttable);
     free(pos);
-    printf("Freed\n");
+    // printf("Freed\n");
     return 0;
 }   
 
@@ -297,9 +297,9 @@ void IterativeDeepen(S_SEARCH_WORKER_DATA* workerData){
 
 int StartWorkerThread(void* data){
     S_SEARCH_WORKER_DATA* workerData = (S_SEARCH_WORKER_DATA*) data;
-    printf("Thread: %d Starts\n", workerData->threadNumber);
+    // printf("Thread: %d Starts\n", workerData->threadNumber);
     IterativeDeepen(workerData);
-    printf("Thread: %d Ends\n", workerData->threadNumber, workerData->depth);
+    // printf("Thread: %d Ends\n", workerData->threadNumber, workerData->depth);
     if(workerData->threadNumber == 0){
         printf("bestmove %s\n", PrMove(workerData->bestMove));
     }
@@ -317,7 +317,7 @@ void SetupWorker(int threadNum, thrd_t* workerTh, S_BOARD* pos, S_SEARCHINFO* in
 }
 
 void CreateSearchWorkers(S_BOARD* pos, S_SEARCHINFO* info, S_HASHTABLE* table){
-    printf("CreateSearchWorkers: %d\n", info->threadNum);
+   // printf("CreateSearchWorkers: %d\n", info->threadNum);
     for(int i = 0; i<info->threadNum; i++){
         SetupWorker(i, &workerThreads[i], pos, info, table);
     }
@@ -340,54 +340,10 @@ void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info , S_HASHTABLE* table){
     }
     if(bestMove == NOMOVE){
         CreateSearchWorkers(pos, info, table);
-        
-        
-        
-        
-        // for(currentDepth = 1; currentDepth <= info->depth; ++currentDepth){
-        //     bestScore = AlphaBeta(-AB_BOUND, AB_BOUND, currentDepth, pos, info, TRUE, table);
-
-        //     if(info->stopped == TRUE){
-        //         break;
-        //     }
-
-        //     pvMoves = GetPvLine(currentDepth, pos, table);
-        //     bestMove = pos->PvArray[0];
-        //     if(info->GAME_MODE == UCIMODE){
-        //         printf("info score cp %d depth %d nodes %ld time %d pv",  bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
-        //     }
-        //     else if(info->GAME_MODE == XBOARDMODE && info->POST_THINKING == TRUE){
-        //         printf("%d %d %d %ld ", currentDepth, bestScore, (GetTimeMs() - info->starttime)/10, info->nodes);
-        //     }else if(info->POST_THINKING == TRUE){
-        //         printf("score:%d depth:%d nodes:%ld time:%d(ms) ", bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
-        //     }
-        //     if(info->GAME_MODE == UCIMODE || info->POST_THINKING == TRUE){
-        //         pvMoves = GetPvLine(currentDepth, pos, table);
-        //         printf("pv");
-        //         for(pvNum = 0; pvNum < pvMoves; ++pvNum){
-        //             printf(" %s", PrMove(pos->PvArray[pvNum]));
-        //         }
-        //         N(1);
-        //     }
-                
-        //     //printf("Ordering %.2f\n", (info->fhf / info->fh));
-        // }
     }else{
         printf("bestmove %s\n", PrMove(bestMove));
     }
     for(int i = 0; i<info->threadNum; i++){
         thrd_join(workerThreads[i], NULL);
     }
-    //info score cp 13 depth 1 nodes 13 time 15 pv f1b5
-    // if(info->GAME_MODE == UCIMODE){
-    //     printf("bestmove %s\n", PrMove(bestMove));
-    // }
-    // else if(info->GAME_MODE == XBOARDMODE){
-    //     printf("move %s\n", PrMove(bestMove));
-    //     MakeMove(pos, bestMove);
-    // }else{
-    //     printf("\n\n***!! Stinkfish makes move %s !!***\n\n", PrMove(bestMove));
-    //     MakeMove(pos, bestMove);
-    //     PrintBoard(pos);
-    // }
 }

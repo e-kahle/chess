@@ -86,15 +86,7 @@ void InitEvalMasks(){
         }
         
     }
-    // for(sq = 0; sq < 64; sq++){
-    //         PrintBitBoard(IsolatedMask[sq]);
-    //     }
-    // for(r = RANK_8; r >= RANK_1; r--){
-    //     PrintBitBoard(RankBBMask[r]);
-    // }
-    // for(f = FILE_A; f<= FILE_H; f++){
-    //     PrintBitBoard(FileBBMask[f]);
-    // }
+    
 }
 
 void InitFileRanksBrd(){
@@ -115,16 +107,6 @@ void InitFileRanksBrd(){
         }
     }
 
-    // printf("FilesBrd\n");
-    // for(index = 0; index < BRD_SQ_NUM; ++index){
-    //     if(index%10 == 0 && index !=0)printf("\n");
-    //     printf("%4d", FilesBrd[index]);
-    // }
-    //  printf("RanksBrd\n");
-    // for(index = 0; index < BRD_SQ_NUM; ++index){
-    //     if(index%10 == 0 && index !=0)printf("\n");
-    //     printf("%4d", RanksBrd[index]);
-    // }
 }
 
 void InitHashKeys(){

@@ -140,10 +140,6 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	U64 test_key = pos->posKey ^ table->pTable[index].smp_data;
 	if( table->pTable[index].smp_key == test_key ) {
-		// U64 test_key = table->pTable[index].posKey ^ table->pTable[index].smp_data;
-        // if(test_key != table->pTable[index].smp_key) printf("Error test_key\n");
-
-        // VerifyEntrySMP(&table->pTable[index]);
         int smp_depth = EXTRACT_DEPTH(table->pTable[index].smp_data);
         int smp_move = EXTRACT_MOVE(table->pTable[index].smp_data);
         int smp_score = EXTRACT_SCORE(table->pTable[index].smp_data);
