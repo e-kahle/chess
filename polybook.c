@@ -187,10 +187,10 @@ int GetBookMove(S_BOARD* board){
         }
        
     }
-    printf("Listing Book Moves:\n");
-    for(index = 0; index < count; ++index){
-        printf("BookMove %d : %s | weight: %u\n", index+1, PrMove(bookMoves[index]), bookMoveWeights[index]);
-    }
+    // printf("Listing Book Moves:\n");
+    // for(index = 0; index < count; ++index){
+    //     printf("BookMove %d : %s | weight: %u\n", index+1, PrMove(bookMoves[index]), bookMoveWeights[index]);
+    // }
     if(count != 0){
         if(count == 1) return bookMoves[0];
         double percents[count];
@@ -200,17 +200,17 @@ int GetBookMove(S_BOARD* board){
             if(index > 0){
                 percents[index] += percents[index-1];
             }
-             printf("Percent Cutoff for %s : %lf\n", PrMove(bookMoves[index]), percents[index]);
+             //printf("Percent Cutoff for %s : %lf\n", PrMove(bookMoves[index]), percents[index]);
         }
         
         double randPoint = (double)rand() / (double)RAND_MAX;
         index = 0;
-        printf("RANDPOINT: %lf\n ", randPoint);
+        // printf("RANDPOINT: %lf\n ", randPoint);
         while(randPoint > percents[index] && index < count-1){
             index++;
         }
-        printf("index: %d\n", index);
-        printf("Move: %s\n", PrMove(bookMoves[index]));
+        // printf("index: %d\n", index);
+        //printf("Move: %s\n", PrMove(bookMoves[index]));
         return bookMoves[index];
     }else{
         return NOMOVE;

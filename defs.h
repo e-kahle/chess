@@ -17,12 +17,16 @@ exit(1) ;}
 #endif
 typedef unsigned long long U64;
 
-#define NAME "Vice 1.0"
+#define NAME "TTCE 1.0"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
 #define MAXDEPTH 64
+#define MAXTHREADS 32
 #define MAX_HASH 1024
+#define FINE_70 "8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - -"
+#define WAC_ "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - -"
+#define LCT_1 "r3kb1r/3n1pp1/p6p/2pPp2q/Pp2N3/3B2PP/1PQ2P2/R3K2R w KQkq -"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 enum {UCIMODE, XBOARDMODE, CONSOLEMODE};
@@ -162,11 +166,14 @@ typedef struct {
 
 enum {  HFNONE, HFALPHA, HFBETA, HFEXACT};
 typedef struct {
-    U64 posKey;
-    int move;
-    int score;
-    int depth;
-    int flags;
+    // U64 posKey;
+    // int move;
+    // int score;
+    // int depth;
+    // int flags;
+    int age;
+    U64 smp_data;
+    U64 smp_key;
 } S_HASHENTRY;
 
 typedef struct {
@@ -176,6 +183,7 @@ typedef struct {
     int overWrite;
     int hit;
     int cut;
+    int currentAge;
 } S_HASHTABLE;
 
 
@@ -207,6 +215,8 @@ typedef struct {
 
     int GAME_MODE;
 	int POST_THINKING;
+
+    int threadNum;
 } S_SEARCHINFO;
 
 typedef struct{
@@ -242,7 +252,7 @@ typedef struct{
     //piece list (initialized to NO_SQ, pList[piece][num] = sq)
     int pList[13][10];
 
-    S_HASHTABLE HashTable[1];
+    
     int PvArray[MAXDEPTH];
 
     int searchHistory[13][BRD_SQ_NUM];
@@ -254,6 +264,21 @@ typedef struct{
     int UseBook;
 } S_OPTIONS;
 
+typedef struct{
+    S_SEARCHINFO* info;
+    S_BOARD* originalPosition;
+    S_HASHTABLE* ttable;
+} S_SEARCH_THREAD_DATA;
+
+typedef struct {
+    S_BOARD* pos;
+    S_SEARCHINFO* info;
+    S_HASHTABLE* ttable;
+
+    int threadNumber;
+    int depth;
+    int bestMove;
+} S_SEARCH_WORKER_DATA;
 
 /*UTIL*/
 #define N(n) \
@@ -284,7 +309,8 @@ typedef struct{
 #define MFLAGPROM 0xF00000
 
 #define NOMOVE 0
-#define INF_BOUND 30000
+#define INF_BOUND 32000
+#define AB_BOUND 30000
 
 #define ISMATE (INF_BOUND - MAXDEPTH)
 
@@ -317,7 +343,7 @@ extern char PceChar[];
 extern char SideChar[];
 extern char RankChar[];
 extern char FileChar[];
-
+extern S_HASHTABLE HashTable[1];
 extern int PieceBig[13];
 extern int PieceMaj[13];
 extern int PieceMin[13];
@@ -398,19 +424,21 @@ extern void MakeNullMove(S_BOARD* pos);
 extern void PerftTest(int depth, S_BOARD* pos);
 
 //search.c
-extern void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info);
+extern int SearchPosition_Thread(void* data);
+extern void SearchPosition(S_BOARD* pos, S_SEARCHINFO* info, S_HASHTABLE* table);
 //extern int IsRepetition(const S_BOARD* pos);
 
 //misc.c
 extern int GetTimeMs();
-extern void ReadInput(S_SEARCHINFO* info);
+// extern void ReadInput(S_SEARCHINFO* info);
 //pvtable.c
 // extern void InitPvTable(S_PVTABLE* table);
 // extern void StorePvMove(const S_BOARD* pos, const int move);
-extern int ProbePvTable(const S_BOARD* pos);
-extern int GetPvLine(const int depth, S_BOARD* pos);
-extern int ProbeHashEntry(S_BOARD* pos, int* move, int* score, int alpha, int beta, int depth );
-extern void StoreHashEntry( S_BOARD* pos, const int move, int score, const int flags, const int depth);
+extern void TempHashTest(char* fen);
+extern int ProbePvTable(const S_BOARD* pos, const S_HASHTABLE* table);
+extern int GetPvLine(const int depth, S_BOARD* pos, const S_HASHTABLE* table);
+extern int ProbeHashEntry(S_BOARD* pos, int* move, int* score, int alpha, int beta, int depth, S_HASHTABLE* table );
+extern void StoreHashEntry( S_BOARD* pos, const int move, int score, const int flags, const int depth, S_HASHTABLE* table);
 extern void InitHashTable(S_HASHTABLE* table, int MB);
 extern void ClearHashTable(S_HASHTABLE* table);
 // extern void ClearPvTable(S_PVTABLE* table);

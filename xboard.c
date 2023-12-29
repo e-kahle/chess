@@ -197,7 +197,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
 			printf("time:%d start:%d stop:%d depth:%d timeset:%d movestogo:%d mps:%d\n",
 				time,info->starttime,info->stoptime,info->depth,info->timeset, movestogo[pos->side], mps);
-				SearchPosition(pos, info);
+				SearchPosition(pos, info, HashTable);
 
 			if(mps != 0) {
 				movestogo[pos->side^1]--;
@@ -265,7 +265,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 		    if(MB < 4) MB = 4;
 			if(MB > MAX_HASH) MB = MAX_HASH;
 			printf("Set Hash to %d MB\n",MB);
-			InitHashTable(pos->HashTable, MB);
+			InitHashTable(HashTable, MB);
 			continue;
 		}
 
@@ -356,7 +356,7 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 				info->stoptime = info->starttime + movetime;
 			}
 
-			SearchPosition(pos, info);
+			SearchPosition(pos, info, HashTable);
 		}
 
 		printf("\nTTCE > ");

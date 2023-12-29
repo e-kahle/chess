@@ -20,7 +20,9 @@
 #define V48 "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N w - - 0 1 "
 #define PERFT3 "8/8/1B6/7b/7k/8/2B1b3/7K w - - 0 1 "
 #define WAC1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
-
+#define FINE_70 "8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - -"
+#define WAC_ "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - -"
+#define LCT_1 "r3kb1r/3n1pp1/p6p/2pPp2q/Pp2N3/3B2PP/1PQ2P2/R3K2R w KQkq -"
 void PrintStats(int w, int l, int d){
     double m = (double)w + ((double)d/2);
     int n = w + l + d;
@@ -45,11 +47,15 @@ int main(int argc, char* argv[]){
     S_BOARD pos[1];
     //printf("PolyKey: %lld", PolyKeyFromBoard(pos));
     S_SEARCHINFO info[1];
+    info->threadNum = 4;
     info->quit = FALSE;
-    pos->HashTable->pTable = NULL;
-    InitHashTable(pos->HashTable, 64);
+    HashTable->pTable = NULL;
+    InitHashTable(HashTable, 64);
     setbuf(stdin, NULL);
     setbuf(stdout, NULL);
+    // TempHashTest(PERFT);
+    // TempHashTest(WAC1);
+    // exit(0);
     int ArgNum = 0;
     for(ArgNum = 0; ArgNum < argc; ++ArgNum){
         if(strncmp(argv[ArgNum], "NoBook", 6) == 0){
@@ -94,7 +100,7 @@ int main(int argc, char* argv[]){
             continue;
         }
     }
-    free(pos->HashTable->pTable);
+    free(HashTable->pTable);
     CleanPolyBook();
     return 0;
     // S_BOARD board[1];
