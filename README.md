@@ -1,6 +1,6 @@
 # Welcome to the Official GitHub of Thomas the Chess Engine (TTCE).
 TTCE is a simple chess engine written in C. You can play against TTCE online at https://lichess.org/@/ThomasTCE1 \
-ThomasTCE1 is a lichess-bot account that runs TTCE to play against humans and/or other lichess-bot accounts.\
+ThomasTCE1 is a lichess-bot account that runs TTCE to play against humans and/or other lichess-bot accounts.
 
 # Features
 TTCE implements the following features:\
