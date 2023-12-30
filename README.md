@@ -2,6 +2,14 @@
 TTCE is a simple chess engine written in C. You can play against TTCE online at https://lichess.org/@/ThomasTCE1 \
 ThomasTCE1 is a lichess-bot account that runs TTCE to play against humans and/or other lichess-bot accounts.
 
+# Running TTCE
+TTCE is very simple to run:
+1. First, make sure you have GCC installed 
+2. Type your installed make command (i.e. mingw32-make)
+3. Run the compiled executable (i.e. ./ttce1p2) (this is for console mode)
+4. Install the executable to a GUI (to better utilize UCI and/or Xboard protocols)
+5. Enjoy 
+
 # Features
 TTCE implements the following features:\
 -- BitMaps\
@@ -40,14 +48,6 @@ TTCE implements the following protocols:\
 -- Universal Chess Interface (UCI - this is how TTCE interacts with lichess.org)\
 -- Xboard/Winboard Protocol (Will not be updated for future commits)\
 -- Custom Console Protocol (Useful for debugging / in place of GUI)\
-
-# Running TTCE
-TTCE is very simple to run:
-1. First, make sure you have GCC installed 
-2. Type your installed make command (i.e. mingw32-make)
-3. Run the compiled executable (i.e. ./ttce1p2) (this is for console mode)
-4. Install the executable to a GUI (to better utilize UCI and/or Xboard protocols)
-5. Enjoy 
 
 # Acknowledgements
 1. TTCE was inspired by BlueFever Software's video series on a C chess engine, which can be found here: https://www.youtube.com/watch?v=bGAfaepBco4&list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg
