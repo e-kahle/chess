@@ -41,8 +41,16 @@ TTCE implements the following protocols:\
 -- Xboard/Winboard Protocol (Will not be updated for future commits)\
 -- Custom Console Protocol (Useful for debugging / in place of GUI)\
 
+# Running TTCE
+TTCE is very simple to run:
+1. First, make sure you have GCC installed 
+2. Type your installed make command (i.e. mingw32-make)
+3. Run the compiled executable (i.e. ./ttce1p2) (this is for console mode)
+4. Install the executable to a GUI (to better utilize UCI and/or Xboard protocols)
+5. Enjoy 
+
 # Acknowledgements
-1. TTCE was inspired by BlueFever Software's video series on a c chess engine, which can be found here: https://www.youtube.com/watch?v=bGAfaepBco4&list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg
+1. TTCE was inspired by BlueFever Software's video series on a C chess engine, which can be found here: https://www.youtube.com/watch?v=bGAfaepBco4&list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg
 2. TTCE utilizes the multithreading implementation provided by Marcus Johnson in the public GitHub repository found here: https://github.com/tinycthread/tinycthread
 3. TTCE uses by default the codekiddy.bin Polyglot Opening Book, and this repository also includes the Komodo.bin and Performance.bin books, all of which can be found here: https://chess.stackexchange.com/questions/35448/looking-for-polyglot-opening-books
 
